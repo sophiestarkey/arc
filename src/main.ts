@@ -8,6 +8,8 @@ const TIME_STEP = 16.67;
 
 window.addEventListener("load", main);
 window.addEventListener("resize", resize);
+window.addEventListener("keydown", process_event);
+window.addEventListener("keyup", process_event);
 
 function main(): void
 {
@@ -27,6 +29,11 @@ function resize(): void
     const rect = ctx.canvas.getBoundingClientRect();
     ctx.canvas.width = Math.round(rect.width * dpr);
     ctx.canvas.height = Math.round(rect.height * dpr);
+}
+
+function process_event(ev: Event): void
+{
+    paddle.process_event(ev);
 }
 
 function loop(now: DOMHighResTimeStamp): void

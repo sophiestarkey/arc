@@ -4,17 +4,70 @@ export class Paddle {
     private depth: number;
     private distance: number;
 
+    private move_left: boolean;
+    private move_right: boolean;
+    private move_down: boolean;
+    private move_up: boolean;
+
     constructor()
     {
         this.angle = 0;
         this.radius = Math.PI / 4;
         this.depth = 1;
         this.distance = 15;
+
+        this.move_left = false;
+        this.move_right = false;
+        this.move_up = false;
+        this.move_down = false;
+    }
+
+    public process_event(ev: Event): void
+    {
+        switch (ev.type) {
+            case "keydown":
+                if ((<KeyboardEvent> ev).key == "a") this.move_left = true;
+                if ((<KeyboardEvent> ev).key == "d") this.move_right = true;
+                if ((<KeyboardEvent> ev).key == "w") this.move_up = true;
+                if ((<KeyboardEvent> ev).key == "s") this.move_down = true;
+                break;
+            case "keyup":
+                if ((<KeyboardEvent> ev).key == "a") this.move_left = false;
+                if ((<KeyboardEvent> ev).key == "d") this.move_right = false;
+                if ((<KeyboardEvent> ev).key == "w") this.move_up = false;
+                if ((<KeyboardEvent> ev).key == "s") this.move_down = false;
+                break;
+        }
     }
 
     public update(dt: number): void
     {
-        this.angle += Math.PI / 3 * dt;
+        let input_x = 0;
+        let input_y = 0;
+
+        if (this.move_left) input_x -= 1;
+        if (this.move_right) input_x += 1;
+        if (this.move_up) input_y -= 1;
+        if (this.move_down) input_y += 1;
+
+        // normalize input vector
+        let len = Math.sqrt(input_x * input_x + input_y * input_y);
+        input_x /= len;
+        input_y /= len;
+
+        // is the player trying to move?
+        if (len) {
+            const s = Math.sin(-this.angle);
+            const c = Math.cos(-this.angle);
+
+            // angle between input vector and current paddle angle
+            const diff = Math.acos(input_x * c - input_y * s);
+            // direction of motion; cw is positive and ccw is negative
+            const dir = Math.sign(input_x * s + input_y * c);
+
+            const SPEED = Math.PI * dt;
+            this.angle += Math.min(SPEED, diff) * dir;
+        }
     }
 
     public draw(ctx: CanvasRenderingContext2D): void
