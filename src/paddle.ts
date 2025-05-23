@@ -1,13 +1,12 @@
+import { InputHandler } from "./input_handler.js";
+
 export class Paddle {
+    public input: InputHandler;
+
     private rotation: number;
     private angle: number;
     private depth: number;
     private distance: number;
-
-    private move_left: boolean;
-    private move_right: boolean;
-    private move_down: boolean;
-    private move_up: boolean;
 
     constructor()
     {
@@ -16,47 +15,21 @@ export class Paddle {
         this.depth = 1;
         this.distance = 15;
 
-        this.move_left = false;
-        this.move_right = false;
-        this.move_up = false;
-        this.move_down = false;
+        this.input = new InputHandler();
     }
 
     public process_event(ev: Event): void
     {
-        switch (ev.type) {
-            case "keydown":
-                if ((<KeyboardEvent> ev).key == "a") this.move_left = true;
-                if ((<KeyboardEvent> ev).key == "d") this.move_right = true;
-                if ((<KeyboardEvent> ev).key == "w") this.move_up = true;
-                if ((<KeyboardEvent> ev).key == "s") this.move_down = true;
-                break;
-            case "keyup":
-                if ((<KeyboardEvent> ev).key == "a") this.move_left = false;
-                if ((<KeyboardEvent> ev).key == "d") this.move_right = false;
-                if ((<KeyboardEvent> ev).key == "w") this.move_up = false;
-                if ((<KeyboardEvent> ev).key == "s") this.move_down = false;
-                break;
-        }
+        this.input.process_event(ev);
     }
 
     public update(dt: number): void
     {
-        let input_x = 0;
-        let input_y = 0;
+        let input_x = this.input.get_axis_x();
+        let input_y = this.input.get_axis_y();
 
-        if (this.move_left) input_x -= 1;
-        if (this.move_right) input_x += 1;
-        if (this.move_up) input_y -= 1;
-        if (this.move_down) input_y += 1;
-
-        // normalize input vector
-        let len = Math.sqrt(input_x * input_x + input_y * input_y);
-        input_x /= len;
-        input_y /= len;
-
-        // is the player trying to move?
-        if (len) {
+        // is the player trying to move? (check if squared length != 0)
+        if (input_x * input_x + input_y * input_y) {
             const s = Math.sin(-this.rotation);
             const c = Math.cos(-this.rotation);
 

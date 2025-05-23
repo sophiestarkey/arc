@@ -1,7 +1,8 @@
 import { Paddle } from "./paddle.js";
 
 let ctx: CanvasRenderingContext2D;
-let paddle: Paddle;
+let paddle_1: Paddle;
+let paddle_2: Paddle;
 
 let last_update: DOMHighResTimeStamp;
 const TIME_STEP = 16.67;
@@ -15,7 +16,13 @@ function main(): void
 {
     let canvas = <HTMLCanvasElement> document.getElementById("viewport");
     ctx = canvas.getContext("2d")!;
-    paddle = new Paddle();
+    paddle_1 = new Paddle();
+    paddle_2 = new Paddle();
+
+    paddle_2.input.left_key = "ArrowLeft";
+    paddle_2.input.right_key = "ArrowRight";
+    paddle_2.input.up_key = "ArrowUp";
+    paddle_2.input.down_key = "ArrowDown";
 
     last_update = performance.now();
 
@@ -33,17 +40,21 @@ function resize(): void
 
 function process_event(ev: Event): void
 {
-    paddle.process_event(ev);
+    paddle_1.process_event(ev);
+    paddle_2.process_event(ev);
 }
 
 function loop(now: DOMHighResTimeStamp): void
 {
     while (now - last_update >= TIME_STEP) {
-        paddle.update(TIME_STEP / 1000);
+        paddle_1.update(TIME_STEP / 1000);
+        paddle_2.update(TIME_STEP / 1000);
         last_update += TIME_STEP;
     }
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    paddle.draw(ctx);
+
+    paddle_1.draw(ctx);
+    paddle_2.draw(ctx);
     requestAnimationFrame(loop);
 }
