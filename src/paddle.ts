@@ -49,8 +49,6 @@ export class Paddle {
         const center_y = ctx.canvas.height / 2;
         const scale = 25;
 
-        ctx.fillStyle = "white";
-
         const start_angle = this.rotation - this.angle / 2;
         const end_angle = this.rotation + this.angle / 2;
         const start_radius = this.distance * scale;

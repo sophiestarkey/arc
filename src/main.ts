@@ -52,9 +52,12 @@ function loop(now: DOMHighResTimeStamp): void
         last_update += TIME_STEP;
     }
 
+    ctx.globalCompositeOperation = "screen";
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
+    ctx.fillStyle = "#FF0000";
     paddle_1.draw(ctx);
+    ctx.fillStyle = "#00FFFF";
     paddle_2.draw(ctx);
     requestAnimationFrame(loop);
 }
