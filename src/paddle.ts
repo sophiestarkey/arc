@@ -1,6 +1,6 @@
 export class Paddle {
+    private rotation: number;
     private angle: number;
-    private radius: number;
     private depth: number;
     private distance: number;
 
@@ -11,8 +11,8 @@ export class Paddle {
 
     constructor()
     {
-        this.angle = 0;
-        this.radius = Math.PI / 4;
+        this.rotation = 0;
+        this.angle = Math.PI / 4;
         this.depth = 1;
         this.distance = 15;
 
@@ -57,8 +57,8 @@ export class Paddle {
 
         // is the player trying to move?
         if (len) {
-            const s = Math.sin(-this.angle);
-            const c = Math.cos(-this.angle);
+            const s = Math.sin(-this.rotation);
+            const c = Math.cos(-this.rotation);
 
             // angle between input vector and current paddle angle
             const diff = Math.acos(input_x * c - input_y * s);
@@ -66,7 +66,7 @@ export class Paddle {
             const dir = Math.sign(input_x * s + input_y * c);
 
             const SPEED = Math.PI * dt;
-            this.angle += Math.min(SPEED, diff) * dir;
+            this.rotation += Math.min(SPEED, diff) * dir;
         }
     }
 
@@ -78,8 +78,8 @@ export class Paddle {
 
         ctx.fillStyle = "white";
 
-        const start_angle = this.angle - this.radius / 2;
-        const end_angle = this.angle + this.radius / 2;
+        const start_angle = this.rotation - this.angle / 2;
+        const end_angle = this.rotation + this.angle / 2;
         const start_radius = this.distance * scale;
         const end_radius = (this.distance + this.depth) * scale;
 
