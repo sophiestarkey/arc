@@ -4,6 +4,7 @@ let last_update: DOMHighResTimeStamp;
 const TIME_STEP = 16.67;
 
 window.addEventListener("load", main);
+window.addEventListener("resize", resize);
 
 function main(): void
 {
@@ -20,8 +21,8 @@ function resize(): void
 {
     const dpr = window.devicePixelRatio;
     const rect = ctx.canvas.getBoundingClientRect();
-    ctx.canvas.width = rect.width * dpr;
-    ctx.canvas.height = rect.height * dpr;
+    ctx.canvas.width = Math.round(rect.width * dpr);
+    ctx.canvas.height = Math.round(rect.height * dpr);
 }
 
 function loop(now: DOMHighResTimeStamp): void
