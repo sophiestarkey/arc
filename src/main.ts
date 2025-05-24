@@ -1,6 +1,8 @@
+import { Ball } from "./ball.js";
 import { Paddle } from "./paddle.js";
 
 let ctx: CanvasRenderingContext2D;
+let ball: Ball;
 let paddle_1: Paddle;
 let paddle_2: Paddle;
 
@@ -16,6 +18,7 @@ function main(): void
 {
     let canvas = <HTMLCanvasElement> document.getElementById("viewport");
     ctx = canvas.getContext("2d")!;
+    ball = new Ball();
     paddle_1 = new Paddle();
     paddle_2 = new Paddle();
 
@@ -47,6 +50,7 @@ function process_event(ev: Event): void
 function loop(now: DOMHighResTimeStamp): void
 {
     while (now - last_update >= TIME_STEP) {
+        ball.update(TIME_STEP / 1000);
         paddle_1.update(TIME_STEP / 1000);
         paddle_2.update(TIME_STEP / 1000);
         last_update += TIME_STEP;
@@ -55,6 +59,7 @@ function loop(now: DOMHighResTimeStamp): void
     ctx.globalCompositeOperation = "screen";
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
+    ball.draw(ctx);
     ctx.fillStyle = "#FF0000";
     paddle_1.draw(ctx);
     ctx.fillStyle = "#00FFFF";

@@ -51,7 +51,7 @@ export class Paddle {
     {
         const center_x = ctx.canvas.width / 2;
         const center_y = ctx.canvas.height / 2;
-        const scale = 25;
+        const scale = Math.min(ctx.canvas.width, ctx.canvas.height) / 32;
 
         const start_angle = this._angle - this._arc / 2;
         const end_angle = this._angle + this._arc / 2;
