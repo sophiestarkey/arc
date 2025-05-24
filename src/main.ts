@@ -32,7 +32,7 @@ function main(): void
 
 function resize(): void
 {
-    const dpr = window.devicePixelRatio;
+    const dpr = window.devicePixelRatio || 1;
     const rect = ctx.canvas.getBoundingClientRect();
     ctx.canvas.width = Math.round(rect.width * dpr);
     ctx.canvas.height = Math.round(rect.height * dpr);
