@@ -7,17 +7,17 @@ export class Paddle {
     // to keep consistency with CanvasRenderingContext2D arc() and
     // ellipse() behaviour. also assumes cw motion to be positive,
     // hence the 'inverted' rotation calculations seen below.
-    private angle: number; // polar angle of paddle
-    private arc: number; // paddle 'width', i.e. angle of paddle arc
-    private radius: number; // distance from pole (0, 0)
-    private depth: number; // paddle 'thickness'
+    private _angle: number; // polar angle of paddle
+    private _arc: number; // paddle 'width', i.e. angle of paddle arc
+    private _radius: number; // distance from pole (0, 0)
+    private _depth: number; // paddle 'thickness'
 
     constructor()
     {
-        this.angle = 0;
-        this.arc = Math.PI / 4;
-        this.radius = 15;
-        this.depth = 1;
+        this._angle = 0;
+        this._arc = Math.PI / 4;
+        this._radius = 15;
+        this._depth = 1;
 
         this.input = new InputHandler();
     }
@@ -34,8 +34,8 @@ export class Paddle {
 
         // is the player trying to move? (check if squared length != 0)
         if (input_x * input_x + input_y * input_y) {
-            const s = Math.sin(-this.angle);
-            const c = Math.cos(-this.angle);
+            const s = Math.sin(-this._angle);
+            const c = Math.cos(-this._angle);
 
             // angle between input vector and current paddle angle
             const diff = Math.acos(input_x * c - input_y * s);
@@ -43,7 +43,7 @@ export class Paddle {
             const dir = Math.sign(input_x * s + input_y * c);
 
             const SPEED = Math.PI * dt;
-            this.angle += Math.min(SPEED, diff) * dir;
+            this._angle += Math.min(SPEED, diff) * dir;
         }
     }
 
@@ -53,14 +53,34 @@ export class Paddle {
         const center_y = ctx.canvas.height / 2;
         const scale = 25;
 
-        const start_angle = this.angle - this.arc / 2;
-        const end_angle = this.angle + this.arc / 2;
-        const start_radius = this.radius * scale;
-        const end_radius = (this.radius + this.depth) * scale;
+        const start_angle = this._angle - this._arc / 2;
+        const end_angle = this._angle + this._arc / 2;
+        const start_radius = this._radius * scale;
+        const end_radius = (this._radius + this._depth) * scale;
 
         ctx.beginPath();
         draw_arc(ctx, center_x, center_y, start_radius, end_radius, start_angle, end_angle);
         ctx.fill();
+    }
+
+    public get angle(): number
+    {
+        return this._angle;
+    }
+
+    public get arc(): number
+    {
+        return this._arc;
+    }
+
+    public get radius(): number
+    {
+        return this._radius;
+    }
+
+    public get depth(): number
+    {
+        return this._depth;
     }
 }
 
