@@ -49,17 +49,12 @@ export class Paddle {
 
     public draw(ctx: CanvasRenderingContext2D): void
     {
-        const center_x = ctx.canvas.width / 2;
-        const center_y = ctx.canvas.height / 2;
-        const scale = Math.min(ctx.canvas.width, ctx.canvas.height) / 32;
-
         const start_angle = this._angle - this._arc / 2;
         const end_angle = this._angle + this._arc / 2;
-        const start_radius = this._radius * scale;
-        const end_radius = (this._radius + this._depth) * scale;
+        const end_radius = this._radius + this._depth;
 
         ctx.beginPath();
-        draw_arc(ctx, center_x, center_y, start_radius, end_radius, start_angle, end_angle);
+        draw_arc(ctx, 0, 0, this._radius, end_radius, start_angle, end_angle);
         ctx.fill();
     }
 

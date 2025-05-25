@@ -56,8 +56,16 @@ function loop(now: DOMHighResTimeStamp): void
         last_update += TIME_STEP;
     }
 
+    ctx.reset();
+
+    const center_x = ctx.canvas.width / 2;
+    const center_y = ctx.canvas.height / 2;
+    const scale = Math.min(ctx.canvas.width, ctx.canvas.height) / 32;
+
+    ctx.translate(center_x, center_y);
+    ctx.scale(scale, scale);
+
     ctx.globalCompositeOperation = "screen";
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     ball.draw(ctx);
     ctx.fillStyle = "#FF0000";

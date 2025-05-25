@@ -28,12 +28,9 @@ export class Ball {
 
     public draw(ctx: CanvasRenderingContext2D): void
     {
-        const scale = Math.min(ctx.canvas.width, ctx.canvas.height) / 32;
-        const center_x = ctx.canvas.width / 2;
-        const center_y = ctx.canvas.height / 2;
         ctx.fillStyle = "white";
         ctx.beginPath();
-        ctx.ellipse(center_x + this._x * scale, center_y + this._y * scale, this._radius * scale, this._radius * scale, 0, 0, 2 * Math.PI);
+        ctx.ellipse(this._x, this._y, this._radius, this._radius, 0, 0, 2 * Math.PI);
         ctx.fill();
     }
 
