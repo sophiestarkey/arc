@@ -11,8 +11,6 @@ const TIME_STEP = 16.67;
 
 window.addEventListener("load", main);
 window.addEventListener("resize", resize);
-window.addEventListener("keydown", process_event);
-window.addEventListener("keyup", process_event);
 
 function main(): void
 {
@@ -22,10 +20,10 @@ function main(): void
     paddle_1 = new Paddle();
     paddle_2 = new Paddle();
 
-    paddle_2.input.left_key = "ArrowLeft";
-    paddle_2.input.right_key = "ArrowRight";
-    paddle_2.input.up_key = "ArrowUp";
-    paddle_2.input.down_key = "ArrowDown";
+    paddle_2.move_left_key = "ArrowLeft";
+    paddle_2.move_right_key = "ArrowRight";
+    paddle_2.move_up_key = "ArrowUp";
+    paddle_2.move_down_key = "ArrowDown";
 
     last_update = performance.now();
 
@@ -39,12 +37,6 @@ function resize(): void
     const rect = ctx.canvas.getBoundingClientRect();
     ctx.canvas.width = Math.round(rect.width * dpr);
     ctx.canvas.height = Math.round(rect.height * dpr);
-}
-
-function process_event(ev: Event): void
-{
-    paddle_1.process_event(ev);
-    paddle_2.process_event(ev);
 }
 
 function loop(now: DOMHighResTimeStamp): void

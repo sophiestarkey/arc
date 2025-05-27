@@ -1,7 +1,10 @@
-import { InputHandler } from "./input_handler.js";
+import { Input } from "./input.js";
 
 export class Paddle {
-    public input: InputHandler;
+    public move_left_key: string;
+    public move_right_key: string;
+    public move_up_key: string;
+    public move_down_key: string;
 
     // polar coords assume pole is (0, 0) and polar axis is (1, 0)
     // to keep consistency with CanvasRenderingContext2D arc() and
@@ -14,26 +17,32 @@ export class Paddle {
 
     constructor()
     {
+        this.move_left_key = "a";
+        this.move_right_key = "d";
+        this.move_up_key = "w";
+        this.move_down_key = "s";
+
         this._angle = 0;
         this._arc = Math.PI / 4;
         this._radius = 15;
         this._depth = 1;
-
-        this.input = new InputHandler();
-    }
-
-    public process_event(ev: Event): void
-    {
-        this.input.process_event(ev);
     }
 
     public update(dt: number): void
     {
-        let input_x = this.input.get_axis_x();
-        let input_y = this.input.get_axis_y();
+        let input_x = 0, input_y = 0;
 
-        // is the player trying to move? (check if squared length != 0)
-        if (input_x * input_x + input_y * input_y) {
+        if (Input.is_key_pressed(this.move_left_key)) input_x -= 1;
+        if (Input.is_key_pressed(this.move_right_key)) input_x += 1;
+        if (Input.is_key_pressed(this.move_up_key)) input_y -= 1;
+        if (Input.is_key_pressed(this.move_down_key)) input_y += 1;
+
+        const length = Math.hypot(input_x, input_y);
+        input_x = length ? input_x / length : 0;
+        input_y = length ? input_y / length : 0;
+
+        // is the player trying to move?
+        if (length) {
             const s = Math.sin(-this._angle);
             const c = Math.cos(-this._angle);
 
