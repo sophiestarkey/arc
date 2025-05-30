@@ -30,12 +30,8 @@ export class Paddle {
 
     public update(dt: number): void
     {
-        let input_x = 0, input_y = 0;
-
-        if (Input.is_key_pressed(this.move_left_key)) input_x -= 1;
-        if (Input.is_key_pressed(this.move_right_key)) input_x += 1;
-        if (Input.is_key_pressed(this.move_up_key)) input_y -= 1;
-        if (Input.is_key_pressed(this.move_down_key)) input_y += 1;
+        let input_x = Input.get_axis(this.move_left_key, this.move_right_key);
+        let input_y = Input.get_axis(this.move_up_key, this.move_down_key);
 
         const length = Math.hypot(input_x, input_y);
         input_x = length ? input_x / length : 0;
