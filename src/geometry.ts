@@ -41,7 +41,7 @@ export class LineSegment {
     {
         const denom = (this._x_1 - this._x_2) * (y_1 - y_2) - (this._y_1 - this._y_2) * (x_1 - x_2);
         const t = ((this._x_1 - x_1) * (y_1 - y_2) - (this._y_1 - y_1) * (x_1 - x_2)) / denom;
-        const u = ((this._x_1 - this._x_2) * (this._y_1 - y_1) - (this._y_1 - this._y_2) * (this._x_1 - x_1)) / denom;
+        const u = -((this._x_1 - this._x_2) * (this._y_1 - y_1) - (this._y_1 - this._y_2) * (this._x_1 - x_1)) / denom;
 
         if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
             return t;
