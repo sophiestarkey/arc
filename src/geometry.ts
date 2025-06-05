@@ -30,20 +30,20 @@ export namespace Geometry {
         y: number;
     }
 
-    export function collide(capsule: Capsule, shape: Arc | Line | Point): number
+    export function collide(capsule: Capsule, shape: Arc | Line | Point, max_t: number = 1): number | null
     {
         if ("radius" in shape) {
-            return collide_arc(capsule, shape);
+            return collide_arc(capsule, shape, max_t);
         } else if ("start_x" in shape) {
-            return collide_line(capsule, shape);
+            return collide_line(capsule, shape, max_t);
         } else {
-            return collide_point(capsule, shape);
+            return collide_point(capsule, shape, max_t);
         }
     }
 
-    function collide_arc(capsule: Capsule, arc: Arc): number
+    function collide_arc(capsule: Capsule, arc: Arc, max_t: number = 1): number | null
     {
-        let t: number, angle: number;
+        let t: number | null, angle: number;
 
         const dx = capsule.end_x - capsule.start_x;
         const dy = capsule.end_y - capsule.start_y;
@@ -53,26 +53,26 @@ export namespace Geometry {
         const b = 2 * dot(dx, dy, capsule.start_x - arc.x, capsule.start_y - arc.y);
         const c = squared_length(capsule.start_x - arc.x, capsule.start_y - arc.y) - r ** 2;
 
-        t = lowest_root(a, b, c, 0, 1);
-        if (Number.isNaN(t)) return NaN;
+        t = lowest_root(a, b, c, 0, max_t);
+        if (t === null) return null;
 
         angle = Math.atan2(capsule.start_y + t * dy - arc.y, capsule.start_x + t * dx - arc.x);
         if (angle_in_range(angle, arc.start_angle, arc.end_angle)) {
             return t;
         }
 
-        t = lowest_root(a, b, c, t, 1);
-        if (Number.isNaN(t)) return NaN;
+        t = lowest_root(a, b, c, t, max_t);
+        if (t === null) return null;
 
         angle = Math.atan2(capsule.start_y + t * dy - arc.y, capsule.start_x + t * dx - arc.x);
         if (angle_in_range(angle, arc.start_angle, arc.end_angle)) {
             return t;
         }
 
-        return NaN;
+        return null;
     }
 
-    function collide_line(capsule: Capsule, line: Line): number
+    function collide_line(capsule: Capsule, line: Line, max_t: number = 1): number | null
     {
         const offset_x = line.normal_x * capsule.radius;
         const offset_y = line.normal_y * capsule.radius;
@@ -81,14 +81,14 @@ export namespace Geometry {
         const t = ((capsule.start_x - line.start_x - offset_x) * (line.start_y - line.end_y) - (capsule.start_y - line.start_y - offset_y) * (line.start_x - line.end_x)) / denom;
         const u = -((capsule.start_x - capsule.end_x) * (capsule.start_y - line.start_y - offset_y) - (capsule.start_y - capsule.end_y) * (capsule.start_x - line.start_x - offset_x)) / denom;
 
-        if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+        if (t >= 0 && t <= max_t && u >= 0 && u <= 1) {
             return t;
         }
 
-        return NaN;
+        return null;
     }
 
-    function collide_point(capsule: Capsule, point: Point): number
+    function collide_point(capsule: Capsule, point: Point, max_t: number = 1): number | null
     {
         const dx = capsule.end_x - capsule.start_x;
         const dy = capsule.end_y - capsule.start_y;
@@ -97,7 +97,7 @@ export namespace Geometry {
         const b = 2 * dot(dx, dy, capsule.start_x - point.x, capsule.start_y - point.y);
         const c = squared_length(capsule.start_x - point.x, capsule.start_y - point.y) - capsule.radius ** 2;
 
-        return lowest_root(a, b, c, 0, 1);
+        return lowest_root(a, b, c, 0, max_t);
     }
 }
 
@@ -118,12 +118,12 @@ function angle_in_range(angle: number, min: number, max: number): boolean
     return min_to_angle <= min_to_max;
 }
 
-function lowest_root(a: number, b: number, c: number, r_min: number, r_max: number): number
+function lowest_root(a: number, b: number, c: number, r_min: number, r_max: number): number | null
 {
     const d = b ** 2 - 4 * a * c;
 
     if (d < 0) {
-        return NaN;
+        return null;
     }
 
     const sqrt_d = Math.sqrt(d);
@@ -144,5 +144,5 @@ function lowest_root(a: number, b: number, c: number, r_min: number, r_max: numb
         return r_2;
     }
 
-    return NaN;
+    return null;
 }
