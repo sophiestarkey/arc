@@ -6,10 +6,6 @@ export class Paddle {
     public move_up_key: string;
     public move_down_key: string;
 
-    // polar coords assume pole is (0, 0) and polar axis is (1, 0)
-    // to keep consistency with CanvasRenderingContext2D arc() and
-    // ellipse() behaviour. also assumes cw motion to be positive,
-    // hence the 'inverted' rotation calculations seen below.
     private _angle: number; // polar angle of paddle
     private _arc: number; // paddle 'width', i.e. angle of paddle arc
     private _radius: number; // distance from pole (0, 0)
@@ -39,13 +35,9 @@ export class Paddle {
 
         // is the player trying to move?
         if (length) {
-            const s = Math.sin(-this._angle);
-            const c = Math.cos(-this._angle);
-
-            // angle between input vector and current paddle angle
-            const diff = Math.acos(input_x * c - input_y * s);
-            // direction of motion; cw is positive and ccw is negative
-            const dir = Math.sign(input_x * s + input_y * c);
+            let diff = Math.atan2(input_y, input_x) - this._angle;
+            diff = (diff % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+            const dir = diff < Math.PI ? 1 : -1;
 
             const SPEED = Math.PI * dt;
             this._angle += Math.min(SPEED, diff) * dir;
