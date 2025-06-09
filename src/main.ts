@@ -17,13 +17,20 @@ function main(): void
     let canvas = <HTMLCanvasElement> document.getElementById("viewport");
     ctx = canvas.getContext("2d")!;
     ball = new Ball();
-    paddle_1 = new Paddle();
-    paddle_2 = new Paddle();
 
+    paddle_1 = new Paddle();
+    paddle_1.move_left_key = "a";
+    paddle_1.move_right_key = "d";
+    paddle_1.move_up_key = "w";
+    paddle_1.move_down_key = "s";
+    paddle_1.fill_style = "#FF0000";
+
+    paddle_2 = new Paddle();
     paddle_2.move_left_key = "ArrowLeft";
     paddle_2.move_right_key = "ArrowRight";
     paddle_2.move_up_key = "ArrowUp";
     paddle_2.move_down_key = "ArrowDown";
+    paddle_2.fill_style = "#00FFFF";
 
     last_update = performance.now();
 
@@ -60,9 +67,7 @@ function loop(now: DOMHighResTimeStamp): void
     ctx.globalCompositeOperation = "screen";
 
     ball.draw(ctx);
-    ctx.fillStyle = "#FF0000";
     paddle_1.draw(ctx);
-    ctx.fillStyle = "#00FFFF";
     paddle_2.draw(ctx);
     requestAnimationFrame(loop);
 }

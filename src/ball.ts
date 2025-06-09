@@ -1,9 +1,4 @@
-import { Paddle } from "./paddle.js";
-
 export class Ball {
-    // because the motion of the ball is not angular,
-    // i chose to represent its position in cartesian
-    // coords, despite the paddles using polar coords.
     private _x: number;
     private _y: number;
     private _radius: number;
@@ -49,22 +44,5 @@ export class Ball {
     public get radius(): number
     {
         return this._radius;
-    }
-
-    public intersects(paddle: Paddle): boolean
-    {
-        const start_angle_normal_x = Math.cos(paddle.angle - (paddle.arc + Math.PI) / 2);
-        const start_angle_normal_y = Math.sin(paddle.angle - (paddle.arc + Math.PI) / 2);
-        const end_angle_normal_x = Math.cos(paddle.angle + (paddle.arc + Math.PI) / 2);
-        const end_angle_normal_y = Math.sin(paddle.angle + (paddle.arc + Math.PI) / 2);
-
-        const start_angle_distance = start_angle_normal_x * this.x + start_angle_normal_y * this.y;
-        const end_angle_distance = end_angle_normal_x * this.x + end_angle_normal_y * this.y;
-
-        const length = Math.hypot(this.x, this.y);
-        const start_radius_distance = paddle.radius - length;
-        const end_radius_distance = length - (paddle.radius + paddle.depth);
-
-        return Math.max(start_angle_distance, end_angle_distance, start_radius_distance, end_radius_distance) < this.radius;
     }
 }

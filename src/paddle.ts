@@ -5,21 +5,23 @@ export class Paddle {
     public move_right_key: string;
     public move_up_key: string;
     public move_down_key: string;
+    public fill_style: string | CanvasGradient | CanvasPattern;
 
-    private _angle: number; // polar angle of paddle
-    private _arc: number; // paddle 'width', i.e. angle of paddle arc
-    private _radius: number; // distance from pole (0, 0)
-    private _depth: number; // paddle 'thickness'
+    private _rotation: number;
+    private _angle: number;
+    private _radius: number;
+    private _depth: number;
 
     constructor()
     {
-        this.move_left_key = "a";
-        this.move_right_key = "d";
-        this.move_up_key = "w";
-        this.move_down_key = "s";
+        this.move_left_key = "";
+        this.move_right_key = "";
+        this.move_up_key = "";
+        this.move_down_key = "";
+        this.fill_style = "white";
 
-        this._angle = 0;
-        this._arc = Math.PI / 4;
+        this._rotation = 0;
+        this._angle = Math.PI / 4;
         this._radius = 15;
         this._depth = 1;
     }
@@ -35,34 +37,33 @@ export class Paddle {
 
         // is the player trying to move?
         if (length) {
-            let diff = Math.atan2(input_y, input_x) - this._angle;
+            let diff = Math.atan2(input_y, input_x) - this._rotation;
             diff = (diff % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
             const dir = diff < Math.PI ? 1 : -1;
 
             const SPEED = Math.PI * dt;
-            this._angle += Math.min(SPEED, diff) * dir;
+            this._rotation += Math.min(SPEED, diff) * dir;
         }
     }
 
     public draw(ctx: CanvasRenderingContext2D): void
     {
-        const start_angle = this._angle - this._arc / 2;
-        const end_angle = this._angle + this._arc / 2;
-        const end_radius = this._radius + this._depth;
-
+        ctx.fillStyle = this.fill_style;
         ctx.beginPath();
-        draw_arc(ctx, 0, 0, this._radius, end_radius, start_angle, end_angle);
+        ctx.arc(0, 0, this._radius, this._rotation + this._angle / 2, this._rotation - this._angle / 2, true);
+        ctx.arc(0, 0, this._radius + this._depth, this._rotation - this._angle / 2, this._rotation + this._angle / 2);
+        ctx.closePath();
         ctx.fill();
+    }
+
+    public get rotation(): number
+    {
+        return this._rotation;
     }
 
     public get angle(): number
     {
         return this._angle;
-    }
-
-    public get arc(): number
-    {
-        return this._arc;
     }
 
     public get radius(): number
@@ -74,11 +75,4 @@ export class Paddle {
     {
         return this._depth;
     }
-}
-
-function draw_arc(ctx: CanvasRenderingContext2D, x: number, y: number, start_radius: number, end_radius: number, start_angle: number, end_angle: number): void
-{
-        ctx.arc(x, y, start_radius, end_angle, start_angle, true);
-        ctx.arc(x, y, end_radius, start_angle, end_angle);
-        ctx.closePath();
 }
